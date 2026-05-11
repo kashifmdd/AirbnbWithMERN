@@ -58,7 +58,7 @@ body{
     color: blue;
 }
 
-.card {
+.listing-card {
     border: none !important;
     margin-bottom: 2rem;
 
@@ -88,10 +88,10 @@ body{
 
 }
 
-.btn{
+/* .btn{
     background-color: rgb(163, 7, 0) !important;
     border: none !important;
-}
+} */
 
 .btns{
     display: flex;
