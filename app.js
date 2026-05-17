@@ -14,6 +14,10 @@ const listingRoutes = require('./routes/listing.js');
 const reviewRoutes = require('./routes/review.js');
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user.js");
+const userRoutes = require("./routes/user.js");
 
 
 main().then(()=>{
@@ -50,6 +54,14 @@ app.get("/", (req, res) => {
 
 app.use(session(sessionOption));
 app.use(flash());
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // flash
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
@@ -57,12 +69,24 @@ app.use((req, res, next) => {
     next();
 });
 
+// Demo User
+// app.get("/demouser", async (req, res) => {
+//     let fakeUser = new User({
+//         email: "student@gmail.com",
+//         username: "sigma-student",
+//     });
+//     let registeredUser = await User.register(fakeUser, "HelloWorld");
+//     res.send(registeredUser);
+// });
 
 // listing routes
 app.use("/listings", listingRoutes);
 
 // review routes
 app.use("/listings/:id/reviews", reviewRoutes);
+
+// user routes 
+app.use("/", userRoutes);
 
 app.use((req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
